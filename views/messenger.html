@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WB Messenger</title>
+    <meta name="description" content="Stay connected, under IT's radar ;) ">
+    <link rel="shortcut icon" href="https://cdn.glitch.com/b4fe921b-f672-42a9-b674-e090293609f3%2Fwb%20messenger%20ico.png?1506607376269" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="./messenger.css">
+    <script src="//twemoji.maxcdn.com/2/twemoji.min.js?2.3.1"></script>
+    <style>
+      /* Changes for individual user */
+      .main .{{ user.username }} {
+        text-align: right;
+      }
+
+      .main .{{ user.username }} img, .main .{{ user.username }} .name {
+        display: none;
+      }
+      
+      .main .{{ user.username }} .text .message-content {
+        text-align: left;
+        margin-right: 10px;
+        background-color: #006699;
+        color: white;
+      }
+      
+      #{{ user.username }} {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    
+{% if blocked %}
+<div class="container">
+  <br><br>
+  <h1>
+  Sorry you can't acess this as you have been blocked :(
+</h1>
+<h2>
+  If you believe this is an error get in contact with Will
+</h2>
+{% else %} <!-- End blocked -->
+
+  
+<div class="top">
+  
+<img id="logo" src="https://cdn.glitch.com/b4fe921b-f672-42a9-b674-e090293609f3%2FWB%20Messenger%20Logo.svg?1506660839073">
+
+<div id="personalprofile">
+<img src="http://wbmessenger.glitch.me/{{ user.username }}.jpg">
+  <i class="fa fa-cog" style="cursor: pointer" id="personalSettings" aria-hidden="true"></i>
+</div>
+  
+<ul class="nav nav-tabs justify-content-center">
+  
+  <li class="nav-item">
+    <a href="" id="group" class="active nav-link" title="Group Chat"><img src="https://cdn.glitch.com/b4fe921b-f672-42a9-b674-e090293609f3%2FGroup%20Chat.png?1510569159726"></a>
+  </li>
+  
+  {% for item in users %}
+    <li class="nav-item">
+      <a href="" id="{{ item.username }}" class="nav-link" title="{{ item.firstname }} {{ item.lasname }}"><img src="{{ item.username }}.jpg"></a>
+    </li>
+  {% endfor %}
+</ul>
+
+<div class="top2">
+  <!--<div class="newwindow"><i class="fa fa-external-link" aria-hidden="true"></i></div>-->
+  <h1 class="chatName"></h1>
+  <!--<div class="settings"><i class="fa fa-cogs" aria-hidden="true"></i></div>-->
+</div>
+<hr>
+</div>
+<div class="main">
+  
+</div>
+<div class="bottom">
+  <hr>
+    <div class="emoji-icon"><i class="fa fa-smile-o" aria-hidden="true"></i></div>
+    <form class="messageForm">
+      <input type="text" class="message-text" placeholder="Type your message here">
+      <button type="submit" class="send-btn">Send</button>
+    </form>
+</div>
+    
+    <!-- Account settings modal -->
+    <div class="modal fade bd-example-modal-lg" id="personalSettingsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Your Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span style="cursor: pointer" aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h5>
+              Profile Picture
+            </h5>
+            <form action="changepic" method="post" enctype="multipart/form-data">
+              <label>Select an image file</label>
+	            <input type="file" name="sampleFile" /><br>
+	            <input type="submit" class="btn btn-info" style="cursor: pointer"/>
+            </form>
+            <hr>
+            
+            <h5>
+              Password
+            </h5>
+            <form action="changepsw" method="post" class="changepsw">
+	            <input name="password" type="password" placeholder="New Password"><br>
+              <input name="passwordconfirm" type="password" placeholder="Confirm Password"><br>
+	            <input class="btn btn-info" type="submit" style="cursor: pointer"/>
+            </form>
+            <hr>
+              
+            <h5>
+              Logout
+            </h5>
+            <a href="/logout" class="btn btn-info">Click here to logout of your account</a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Account Settings Modal -->
+  
+    <!-- All the fun scripts that we need -->
+    <script src="https://use.fontawesome.com/c9019f9ead.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.slim.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script>
+      
+      /* Open the personal settings modal */
+      $('#personalSettings').click(function () {
+        $('#personalSettingsModal').modal('toggle');
+      });
+      
+      /* Add top and bottom space to .main */
+      $(".main").css("padding-top", $(".top").height() + 40 + "px");
+      $(".main").css("margin-bottom", ($(".bottom").css("height"))) + "px";  
+      var username = "{{user.username}}";
+      var firstname = "{{user.firstname}}"
+      
+    </script>
+  <script src="./client.js"></script>
+{% endif %}
+    </div>
+  </body>
+</html>
